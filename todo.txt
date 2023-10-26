@@ -1,0 +1,20 @@
+1) Data Storage - Sql Alchemy 
+    1) Monitor all my activities
+    2) store them in database
+        1) Check the rules tab and add label accordingly
+    3) Don't add data in ignore tab
+
+2) Data fetching - Sql Alchemy
+    1) Fetch all data
+    2) Fetch data by current date
+    3) Fetch by catogary
+    4) Fetch by App Name
+    5) Calculate time in each instance
+
+3) API calls - Fase API
+    1) Seperate api calls for every above mentioned things
+
+4) Front end - Svelte Kit
+    1) Retreive data using api calls
+    2) Display them as graph
+    3) Allow option to export as any data format
