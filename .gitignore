@@ -1,2 +1,3 @@
 notesForEntruneur.txt
 *.db
+__pycache__
