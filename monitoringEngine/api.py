@@ -1,22 +1,32 @@
 from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
+from dataBase import Database
+
+
 app = FastAPI()
 
-from dataBase import Database
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["http://localhost:5173"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 db = Database()
 
 @app.get("/")
-async def index():
-   return f"Today's usage time is {db.getTotalTime()}"
+async def getAllNames():
+   return db.getAllNames()
 
 @app.get("/time/{name}")
-async def val(name):
-   return f"Total Usage Time is {db.getTimeByName(name,"total")}"
+async def getTimeByName(name):
+   return db.getTimeByName(name,"total")
 
 @app.get("/time/{name}/{context}/")
-async def val(name,context):
+async def getTimeByDay(name,context):
    if context == "today":
-      return f"Today's Usage Time is {db.getTimeByName(name,"today")}"
+      return db.getTimeByName(name,"today")
    
    elif context == "yesterday":
       return f"Yesterday's Usage Time is {db.getTimeByName(name,"yesterday")}"
