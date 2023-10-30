@@ -18,3 +18,8 @@
     1) Retreive data using api calls
     2) Display them as graph
     3) Allow option to export as any data format
+
+
+Front end breakdown
+
+1) display Total Usage time
