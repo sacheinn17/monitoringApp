@@ -2,6 +2,8 @@ from schema import AppUsage,Base,rules
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 import datetime
+import json
+
 
 engine = create_engine('sqlite:///monitoring.db',connect_args={"check_same_thread": False})
 Session = sessionmaker(bind = engine)
@@ -18,6 +20,7 @@ class Database():
         t = t.filter_by(appName = appName).filter_by(context = Context).filter_by(date=self.date)
         exist = t.first() is not None
         return (t if exist else -1,exist)
+    
     def addEntry(self,name,context,time):
         temp = session.query(rules).filter_by(name = name)
         
@@ -51,7 +54,7 @@ class Database():
             print(y)
 
             return y
-
+    
     def getTimeByName(self,name,filter = "total"):
         t = session.query(AppUsage).filter_by(appName=name)
         if filter != "total":
@@ -68,13 +71,13 @@ class Database():
         time = 0
         for v in t:
             time += v.usageTime
-        return time
+        return time/60
     def getTimeByNameAndContext(self,name,context):
         t = session.query(AppUsage).filter_by(appName=name).filter_by(context= context)
         time = 0
         for v in t:
             time += v.usageTime
-        return time
+        return time/60.0
     def getContextByName(self,name):
         t = session.query(AppUsage).filter_by(appName=name)
         context = []
@@ -140,17 +143,10 @@ class Database():
             retVal.append([i.appName,i.context,i.date,i.usageTime,i.catogary,i.subCatogary])
         return(retVal)
 
-# d = Database()
+    def getAllNames(self):
+        temp = session.query(AppUsage)
+        retVal = []
 
-
-
-
-
-
-        # x = rules(name = "Visual Studio Code",context = "General",catogary= "Productive",subCatogary = "Coding")
-        # session.add(x)
-        # x = rules(name = "Brave",context = "General",catogary= "UnProductive",subCatogary = "Time Waste")
-        # y = rules(name = "Brave",context = "YouTube",catogary= "UnProductive",subCatogary = "Entairtenment")
-        # session.add(x)
-        # session.add(y)
-        # session.commit()
+        for i in temp:
+            retVal.append({"appName":i.appName,"context":i.context})
+        return json.dumps(retVal)
