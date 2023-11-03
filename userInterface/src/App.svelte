@@ -1,16 +1,18 @@
 <script>
 
 import {dataBase} from "./lib/api.js"
+import DispData from "./dispData.svelte";
+import { onMount } from "svelte";
 const db = new dataBase;
 
-let val;
-let temp;
+let temp = db.getTimeByCatogary("today");
+let totalTime;
 
-function search()
+onMount(async() =>
 {
-    temp = db.getTimeByName(val);
-}
-
+    totalTime = db.getTotalTime();
+    // temp = db.getTimeByCatogary("today");
+})
 
 </script>
 
@@ -18,27 +20,23 @@ function search()
 <p>This application automatically tracks your usage time</p>
 <p>Improve productivity greately</p>
 
-
-<!-- {#await db.getAppNames()}
-    <p>Loading data.....</p>
-{:then value} 
-    
-    {#each value as v}
-
-    <p>{v.appName} - {v.context}</p>
-    {/each}
-
-{/await} -->
-    
-
-<input bind:value={val}>
-<button on:click={search}>Search</button>
-
-
-{#await temp}
-<p>Searching</p>    
+{#await temp}   
+<p>Loading</p>    
 {:then val}
-
-    <p>{val}</p>
-    
+    {#each val as key}
+        {key.catogary} : {key.time} <br>
+    {/each}
+{:catch someError}
+    error while loading {someError}<br>
 {/await}
+
+
+{#await totalTime}   
+<p>Loading</p>    
+{:then val}
+    Total Usage time is {val}
+{:catch someError}
+    error while loading {someError}<br>
+{/await}
+
+
