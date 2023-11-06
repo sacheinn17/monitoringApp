@@ -16,7 +16,8 @@ class monitor():
         self.a.start()
 
         while True:
-            time.sleep(10)
+            db.refreshDate()
+            time.sleep(1800)
 
     def mointoring(self):
         while not self.event.is_set():
