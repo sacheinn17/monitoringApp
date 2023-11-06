@@ -1,14 +1,20 @@
 <script>
-    export let usage;
-    export let loadText = "Loading ";
     export let awaitVal;
+    export let card = false;
+    export let title = "";
+    import { fly } from 'svelte/transition'
+    $:cardClassAtr = card ? "card bg-base-200 shadow-inner hover:shadow-2xl transition-shadow ":"";
 </script>
 
-
-{#await awaitVal}
-<p>{loadText} {usage}</p>    
-{:then val}
-    {val}
-{:catch someError}
-    error while loading {usage} : {someError.message}<br>
-{/await}
+<div class = "p-1 grow-0 w-fit h-fit m-1{cardClassAtr} ">
+<div class:card-body = {card} class = "card-body">
+    <p class="card-title ">{title}</p>
+    {#await awaitVal}   
+    <p>Loading</p>    
+    {:then response}
+        <slot {response}/>
+    {:catch someError}
+    error while loading {someError}<br>
+    {/await}
+</div>
+</div>
