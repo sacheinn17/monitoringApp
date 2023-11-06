@@ -9,7 +9,6 @@ engine = create_engine('sqlite:///monitoring.db',connect_args={"check_same_threa
 Session = sessionmaker(bind = engine)
 session = Session()
 
-
 rulesQuery = session.query(rules)
 appUsageQuery = session.query(AppUsage)
 class Database():
@@ -28,7 +27,6 @@ class Database():
             return(u,True)
         else:
             return(-1,False)
-    
     def getCatAndSubCatAndSwap(self,name,context):
         flip = False
         temp = rulesQuery.filter_by(name = name)
@@ -65,7 +63,6 @@ class Database():
                     flip = tempGeneral.first().flip
         
         return (catogary,subCatogary,flip)
-
     def addEntry(self,name,context,time):
         catogary,subCatogary,flip = self.getCatAndSubCatAndSwap(name,context)
         c = None
@@ -75,8 +72,7 @@ class Database():
             c = AppUsage(appName = context,context = name,date = self.date,usageTime = time,catogary = catogary,subCatogary = subCatogary)
 
         session.add(c)
-        session.commit()
-    
+        session.commit() 
     def updateTime(self,val,time):
         try:
             val.update({"usageTime":val.first().usageTime+(time)})
@@ -90,6 +86,8 @@ class Database():
             print(y)
 
             return y
+    def refreshDate(self):
+        self.date = str(datetime.datetime.today().date())
     
     def getTimeByName(self,name,filter = "all"):
         t = appUsageQuery.filter_by(appName=name)
@@ -125,9 +123,31 @@ class Database():
         contextAndTime = {}
         for i in t:
             contextAndTime[i.context] = self.getTimeByNameAndCotext(name = name,context = i.context)
-        return contextAndTime
-    def getTotalTime(self):
-        t = appUsageQuery.filter_by(date = self.date)
+        return json.dumps(contextAndTime)
+    def getAppUsageTime(self,day):
+        date = self.date if day =="today" else day
+        temp = appUsageQuery.filter_by(date = date)
+        names = []
+        retVal = []
+
+        for i in temp:
+            names.append(i.appName)
+        names = list(set(names))
+        print(names)
+
+        for i in names:
+            x = temp.filter_by(appName = i)
+            time = 0
+            for j in x:
+                time += j.usageTime
+            retVal.append({"name":i,
+                           "time":time})
+        print(retVal)
+        return json.dumps(retVal)
+
+    def getTotalTime(self,day = "today"):
+        date = self.date if day == "today" else day
+        t = appUsageQuery.filter_by(date = date)
         time = 0
         for i in t:
             time += i.usageTime
@@ -164,7 +184,7 @@ class Database():
             temp.update({"catogary":i.catogary})
             temp.update({"subCatogary":i.subCatogary})
             session.commit()
-        return "Labels refreshed"
+        return True
     def getAll(self,date):
         temp = appUsageQuery
         retVal = []
@@ -197,8 +217,9 @@ class Database():
             retVal.append({i:temp_2})      
 
         return json.dumps(retVal)
-    def getTimeByCatogaries(self):
-        temp = appUsageQuery
+    def getTimeByCatogaries(self,day):
+        date = self.date if day =="today" else day
+        temp = appUsageQuery.filter_by(date = date)
         names = []
         retVal = []
 
@@ -212,10 +233,10 @@ class Database():
             for j in x:
                 temp_2.append(j.context)
             retVal.append({i:temp_2})      
-            
-        return json.dumps(retVal)
+        return json.dumps(retVal)  
     def getCatogariesAndTime(self,day):
-        temp = appUsageQuery
+        date = self.date if day =="today" else day
+        temp = appUsageQuery.filter_by(date = date)
         catogaries = []
         retVal = []
 
@@ -229,6 +250,7 @@ class Database():
             time = 0
             for j in x:
                 time += j.usageTime
-            retVal.append({"catogary":i,
+            retVal.append({"name":i,
                            "time":time})
+        print(retVal)
         return json.dumps(retVal)

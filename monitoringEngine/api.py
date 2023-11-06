@@ -15,8 +15,8 @@ app.add_middleware(
 db = Database()
 
 @app.get("/time/total")
-async def getTotalTime():
-   return db.getTotalTime()
+async def getTotalTime(day="today"):
+   return db.getTotalTime(day)
 
 @app.get("/time/{name}/")
 async def getTimeByName(name,day = "all"):
@@ -58,6 +58,10 @@ async def val(date:str = "all"):
 async def getNamesAndContext():
     return db.getNameAndContext()
 
-@app.get("/catogariesAndTime")
+@app.get("/catogariesAndTime/")
 async def getCatogariesAndTime(day:str = "today"):
    return db.getCatogariesAndTime(day) 
+
+@app.get("/getAppUsageTime/")
+async def getAppUsageTime(day="today"):
+   return db.getAppUsageTime(day)
