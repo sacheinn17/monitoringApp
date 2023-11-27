@@ -2,7 +2,6 @@
     export let awaitVal;
     export let card = false;
     export let title = "";
-    import { fly } from 'svelte/transition'
     $:cardClassAtr = card ? "card bg-base-200 shadow-inner hover:shadow-2xl transition-shadow ":"";
 </script>
 

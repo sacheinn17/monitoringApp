@@ -38,7 +38,14 @@ export class dataBase
     return getResponceAsJson("namesAndContext");
   }
   
+  getCatNames()
+  {
+    return getResponceAsJson("getCatNames");
+  }
+
   refresh(){
     return getResponce("refreshLabels/");
   }
+
+
 }
