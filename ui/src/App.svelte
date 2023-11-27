@@ -1,27 +1,25 @@
 <script>
-
-import {dataBase} from "./lib/api.js";
+;
+import {dataBase} from "./lib/api.js"
+import {getDate} from "./lib/utilities.js";
 import DispData from "./lib/dispData.svelte";
 import { onMount } from "svelte";
 import {getTop5Apps} from "./lib/logic.js";
 import DonutChart from "./lib/donutChart.svelte"
 import { fade } from "svelte/transition";
+import LineChart from "./lib/lineChart.svelte";
 
 const db = new dataBase;
 let temp = [];
 let totalTime = 0;
-let top5Apps = [] ;
+let top5Apps = [];
 let t;
 let today = new Date();
 let date = '';
-
-function getDate(today){
-return today.getFullYear() + '-' + String(today.getMonth() + 1).padStart(2, '0') + '-' + String(today.getDate()).padStart(2, '0');}
-
 $:date = getDate(today); 
 
 $:{
-    console.log(date);
+    console.log(date,today);
     setFetches();
 }
 
@@ -42,14 +40,13 @@ onMount(async() =>
 async function refresDataBase(){
     t = await db.refreshDataBase()
 };
-
 </script>
 
-<h1 class = " text-cyan-800 text-center">Time Tracker</h1>
-<p class="text-green-500 text-center">This application automatically tracks your usage time and Improve productivity greately</p>
+<h1 class = "text-zinc-400 menu-title text-center">Time Tracker</h1>
+<p class="text-secondary text-center  text-ellipsis">This application automatically tracks your usage time and Improve productivity greately</p>
 
 <div class="flex flex-col" transition:fade>
-    <div class="col1 flex justify-between">
+    <div class="row1 flex justify-between">
 
         <DispData awaitVal = {totalTime} let:response>
             Total Usage Time is {Math.round(response/6)/10} Minutes
@@ -72,17 +69,16 @@ async function refresDataBase(){
         <button class = "btn btn-outline flex-grow-0 btn-wide" on:click={refresDataBase}>Refresh Data Base</button>
 
     </div>
-
-    <div class="col2 flex flex-row pb-3" transition:fade>
-    <DispData card = {true} awaitVal = {temp} let:response title = "Usage time by Catogary">
-        <div class="flex">
-
-            <DonutChart data={response} />
-        </div>
-    </DispData>
-    <div class="graph p-4">
-        This is a graph
-    </div>
+    <div class="row2 flex flex-row" transition:fade>
+        <DispData card = {true} awaitVal = {temp} let:response title = "Usage time by Catogary">
+            <div class="flex">
+                <DonutChart data={response} />
+            </div>
+            
+        </DispData>
+        {#key date}
+            <LineChart db = {db} today = {date}/>
+        {/key}
     </div>
 
     <DispData card = {true} awaitVal = {top5Apps} let:response title = "Most Used Apps">
