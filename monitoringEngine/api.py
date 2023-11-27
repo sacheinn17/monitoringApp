@@ -65,3 +65,7 @@ async def getCatogariesAndTime(day:str = "today"):
 @app.get("/getAppUsageTime/")
 async def getAppUsageTime(day="today"):
    return db.getAppUsageTime(day)
+
+@app.get("/getCatNames/")
+async def getCatNames():
+   return db.getCatNames()
