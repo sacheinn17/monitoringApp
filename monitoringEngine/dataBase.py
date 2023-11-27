@@ -143,7 +143,10 @@ class Database():
             retVal.append({"name":i,
                            "time":time})
         print(retVal)
+        if retVal is None:
+            retVal = [{"error":"Value not found"}]
         return json.dumps(retVal)
+
 
     def getTotalTime(self,day = "today"):
         date = self.date if day == "today" else day
@@ -233,6 +236,8 @@ class Database():
             for j in x:
                 temp_2.append(j.context)
             retVal.append({i:temp_2})      
+        if retVal is None:
+            retVal = [{"error":"Value not found"}]
         return json.dumps(retVal)  
     def getCatogariesAndTime(self,day):
         date = self.date if day =="today" else day
@@ -254,3 +259,13 @@ class Database():
                            "time":time})
         print(retVal)
         return json.dumps(retVal)
+
+    def getCatNames(self):
+        temp = rulesQuery.all()
+        catogaries = ["UnCatogarised"]
+        for i in temp:
+            catogaries.append(i.catogary)
+        catogaries = list(set(catogaries))
+        print(catogaries)
+
+        return json.dumps([{"catogaries":catogaries}])
