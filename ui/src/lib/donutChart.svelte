@@ -1,8 +1,9 @@
 <script>
     import * as d3 from "d3";
     import { onMount } from "svelte";
-    import {sortByKeyDesc} from "./logic"
+    import {sortByKeyDesc} from "./utilities"
     export let data;
+    import { displayCatogaries } from "./stores/lists";
 
 const width = 150, height = 120, margin = 10;
 const radius = Math.min(width, height) / 2 - margin
@@ -44,10 +45,12 @@ const legend = d3.select("#legend")
     .attr("height", height)
 
 legend
-.selectAll()
+.selectAll("text")
     .data(data_ready)
     .enter()
     .append("text")
+    // .classed('noselect')
+    .attr('style',"-webkit-touch-callout: none -webkit-user-select: none; -khtml-user-select: none; -moz-user-select: none; -ms-user-select: none; user-select: none;")
     .attr("x",(d,i) => i)
     .attr("y",(d,i) =>{
         const v = i+15+(30*data.findIndex((item, i) =>  item.name === d.data.name))
@@ -57,6 +60,13 @@ legend
         return (color(d.data.name))
     })
     .text((d) => d.data.name + " : " +Math.round(d.data.time/6)/10+" Mins")
+    .on('mousedown.drag', null)
+    .on("mouseover",function (event){d3.select(this).attr("font-weight", 700)})
+    .on("mouseout",function (){d3.select(this).attr("font-weight", 300)})
+    .on('click',(event,data) => {if ($displayCatogaries.indexOf(data.data.name) == -1){
+        $displayCatogaries.push(data.data.name)
+        $displayCatogaries = $displayCatogaries}
+        console.log($displayCatogaries);})
 })
 </script>
 

@@ -2,6 +2,19 @@ import {dataBase} from "./api.js"
 
 const db = new dataBase;
 
+export function sortByKeyDesc(array, key) {
+    return array.sort(function(a, b) {
+      var x = a[key];
+      var y = b[key];
+      return ((x > y) ? -1 : ((x < y) ? 1 : 0));
+    });
+  }
+
+export async function getTop5Apps(query){
+    const value = await(query);
+    return sortByKeyDesc(value,"time").slice(0,5);
+}
+
 export function getDate(today = new Date){
     return today.getFullYear() + '-' + String(today.getMonth() + 1).padStart(2, '0') + '-' + String(today.getDate()).padStart(2, '0');}
 
@@ -12,16 +25,12 @@ export function getDates(date)
     let firstDayofWeek = curr.getDate() - curr.getDay();
     console.log(curr)
     let days = [];
-    if (firstDayofWeek > -1){
-        for (const x of Array(7).keys()){
-            curr = new Date(date);
-            days.push(getDate(new Date(curr.setDate(firstDayofWeek+x))))
-            }
+    console.log(curr.getMonth())
+    for (const x of Array(7).keys()){
+        curr = new Date(date);
+        days.push(getDate(new Date(curr.setDate(firstDayofWeek+x))))
         }
-    else
-    {
-        return ["null"];
-    }
+        
     return days;
 }
 
@@ -76,4 +85,19 @@ export function getTimeCat(date,catogary)
             }
         }
     )
+}
+
+function getNoOfDays(month,leapYear = false){
+    if (month in [1,3,5,7,8,10,12]){
+        return 31;
+    }
+    else if(month in [4,6,9,11]){
+        return 30;
+    }
+    else if (leapYear === true){
+        return 29;
+    }
+    else{
+        return 28;
+    }
 }

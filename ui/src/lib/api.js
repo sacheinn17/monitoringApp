@@ -47,5 +47,9 @@ export class dataBase
     return getResponce("refreshLabels/");
   }
 
+  getNameByCat(name,date){
+    return getResponceAsJson("nameByCat/?cat="+name+"&date="+date)
+  }
+
 
 }

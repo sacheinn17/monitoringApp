@@ -4,7 +4,6 @@ from sqlalchemy.orm import sessionmaker
 import datetime
 import json
 
-
 engine = create_engine('sqlite:///monitoring.db',connect_args={"check_same_thread": False})
 Session = sessionmaker(bind = engine)
 session = Session()
@@ -242,10 +241,11 @@ class Database():
     def getCatogariesAndTime(self,day):
         date = self.date if day =="today" else day
         temp = appUsageQuery.filter_by(date = date)
-        catogaries = []
+        temp2 = rulesQuery.all()
+        catogaries = ["UnCatogarized"]
         retVal = []
 
-        for i in temp:
+        for i in temp2:
             catogaries.append(i.catogary)
         catogaries = list(set(catogaries))
         print(catogaries)
@@ -255,17 +255,42 @@ class Database():
             time = 0
             for j in x:
                 time += j.usageTime
+            print(x.first())
+
             retVal.append({"name":i,
-                           "time":time})
+                        "time":time})
         print(retVal)
         return json.dumps(retVal)
 
     def getCatNames(self):
         temp = rulesQuery.all()
-        catogaries = ["UnCatogarised"]
+        catogaries = ["UnCatogarized"]
         for i in temp:
             catogaries.append(i.catogary)
         catogaries = list(set(catogaries))
         print(catogaries)
 
         return json.dumps([{"catogaries":catogaries}])
+
+    def getNameByCat(self,name,date):
+        temp = appUsageQuery.filter_by(catogary = name).filter_by(date = date)
+        apps = []
+        retVal = []
+
+        for i in temp:
+            apps.append(i.appName)
+        
+        apps = list(set(apps))
+
+
+        for x in apps:
+            i = temp.filter_by(appName = x)
+            time = 0
+            for j in i:
+                time+=j.usageTime
+
+            retVal.append({"name":x,
+                        "time":time})
+        
+        print(retVal)
+        return json.dumps(retVal)

@@ -11,7 +11,8 @@ db.getCatNames().then(res =>{
     let svg = d3.select("#lineChart");
     let dates = getDates(today);
     let catogaries = res[0].catogaries;
-    const pxX = 800;
+    console.log(catogaries);
+    const pxX = 850;
     const pxY = 250;
     svg.attr("width",pxX);
     svg.attr("height",pxY);
@@ -20,39 +21,40 @@ db.getCatNames().then(res =>{
     const color = d3.scaleOrdinal().domain(["Productive","UnProductive","SemiProductive","UnCatogarized"]).range(["#57FF19", "#FF0800", "#FF5B0D", "#6b486b"])
 
     catogaries.forEach(cat => {
-        let nodes = []
-        dates.forEach((date) => {
-            var time = getTimeCat(date,cat)
-            time.then(time =>{
-                if (time!=undefined){
-                    svg.append('g').selectAll('circle').data(d => [d]).enter()
-                        .append('circle').attr("r",5)
-                        .attr('cx',() => scX(date))
-                        .attr('cy', () =>  scY(time))
-                        .attr('fill', ()=> color(cat))
-                    nodes[dates.indexOf(date)] = [scX(date),scY(time)]
-                }
+    let nodes = []
+    dates.forEach((date) => {
+        var time = getTimeCat(date,cat)
+        time.then(time =>{
+            if (time!=undefined){
+                svg.append('g').selectAll('circle').data(d => [d]).enter()
+                    .append('circle').attr("r",6)
+                    .attr('cx',() => scX(date))
+                    .attr('cy', () =>  scY(time))
+                    .attr('fill', ()=> color(cat))
+                nodes[dates.indexOf(date)] = [scX(date),scY(time)]
+            }
 
-                if (!(nodes.length <7)){           
-                for (let i = 0; i < nodes.length-1; i++){
-                try{
-                    svg
-                        .append('line')
-                        .attr("x1", () => nodes[i][0])
-                        .attr("y1", () => nodes[i][1])
-                        .attr("x2", () => nodes[i+1][0])
-                        .attr("y2", () => nodes[i+1][1] )
-                        .style('stroke',() => color(cat))
-                }
-                catch(e){
-                    console.log(e);
-                    continue;
-                }
-                }                    
-                }
-            })
+            if (!(nodes.length <7)){           
+            for (let i = 0; i < nodes.length-1; i++){
+            try{
+                svg
+                    .append('line')
+                    .attr("x1", () => nodes[i][0])
+                    .attr("y1", () => nodes[i][1])
+                    .attr("x2", () => nodes[i+1][0])
+                    .attr("y2", () => nodes[i+1][1] )
+                    .style('stroke',() => color(cat))
+                    .attr("stroke-width",3)
+            }
+            catch(e){
+                console.log(e);
+                continue;
+            }
+            }                    
+            }
         })
-    })         
+    })
+})         
 
     var ay = d3.axisBottom(scX);
     var ax = d3.axisLeft(scY);

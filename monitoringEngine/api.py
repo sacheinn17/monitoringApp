@@ -38,10 +38,6 @@ async def getTimeByContext(name,context):
    else:
       return {"The usage time of app in current context is ",db.getTimeByNameAndContext(name,context)}
 
-@app.get("/time/{name}/{context}/today/")
-async def getTimeAndNameByContext(name,context):
-   return {"The usage time of app in current context is ",db.getTimeByNameandContextToday(name,context)}
-
 @app.get("/updateLabel")
 async def updateLabel(name:str="Brave",catogary:str="None",subCatogary:str = "UnSpecified",context:str="General"):
    return db.updateLabel(name,context,catogary,subCatogary)
@@ -69,3 +65,7 @@ async def getAppUsageTime(day="today"):
 @app.get("/getCatNames/")
 async def getCatNames():
    return db.getCatNames()
+
+@app.get("/nameByCat/")
+async def getNameByCat(cat:str,date = "today"):
+   return db.getNameByCat(cat,date)

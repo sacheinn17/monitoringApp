@@ -28,11 +28,13 @@ class monitor():
                 application = new_window_name[-1][0:30]
                 context = new_window_name[1 if len(new_window_name)>2 else 0][0:50]
 
-                if application != self.app or context != self.context and name != "Task Switching" and application != '':
+                self.ignoreList = ['',"Windows Default Lock Screen","Task Switching","Task Switching","",None]
+
+                if (application != self.app or context != self.context):
                     self.changed()
                 
                 if self.time - self.lap >300:
-                    self.changed()
+                    self.changed()  
 
                 self.app = application
                 self.context = context
@@ -40,14 +42,15 @@ class monitor():
                 time.sleep(1)
 
     def changed(self):
-        difference = self.time-self.lap
-        self.lap = self.time
-        print(self.app,self.context, self.time)
-        if difference >3:
-            x,exist = db.exists(self.app,self.context)
-            if exist:
-                db.updateTime(x,difference)
-            else:
-                db.addEntry(self.app,self.context,difference)
+        if self.app not in self.ignoreList:
+            difference = self.time-self.lap
+            self.lap = self.time
+            print(self.app,self.context, self.time)
+            if difference >3:
+                x,exist = db.exists(self.app,self.context)
+                if exist:
+                    db.updateTime(x,difference)
+                else:
+                    db.addEntry(self.app,self.context,difference)
 
 d = monitor()

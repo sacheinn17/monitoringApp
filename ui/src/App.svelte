@@ -1,13 +1,13 @@
 <script>
-;
 import {dataBase} from "./lib/api.js"
 import {getDate} from "./lib/utilities.js";
 import DispData from "./lib/dispData.svelte";
 import { onMount } from "svelte";
-import {getTop5Apps} from "./lib/logic.js";
+import {getTop5Apps} from "./lib/utilities.js";
 import DonutChart from "./lib/donutChart.svelte"
 import { fade } from "svelte/transition";
 import LineChart from "./lib/lineChart.svelte";
+import { displayCatogaries } from "./lib/stores/lists.js";
 
 const db = new dataBase;
 let temp = [];
@@ -29,7 +29,7 @@ async function setFetches(){
     temp = db.getCatogariesAndTime(date);
     totalTime = await db.getTotalTime(date);
     // @ts-ignore
-    top5Apps = getTop5Apps(db,date);
+    top5Apps = getTop5Apps(db.getAppUsage(date));
 }
 
 onMount(async() =>
@@ -42,14 +42,17 @@ async function refresDataBase(){
 };
 </script>
 
-<h1 class = "text-zinc-400 menu-title text-center">Time Tracker</h1>
-<p class="text-secondary text-center  text-ellipsis">This application automatically tracks your usage time and Improve productivity greately</p>
+<div class="flex justify-center">
+    <img src="/src/assets/clock-tilted.svg" alt="" srcset="">
+    <h1 class = "text-yellow-600 font-bold text-xl text-center">Hour Hand</h1>
+</div>
+    <p class="text-secondary text-center  text-ellipsis p-1">Track your activity around the clock</p>
 
 <div class="flex flex-col" transition:fade>
     <div class="row1 flex justify-between">
 
         <DispData awaitVal = {totalTime} let:response>
-            Total Usage Time is {Math.round(response/6)/10} Minutes
+            Total Screen Time : {Math.round(response/6)/10} Minutes
         </DispData>
         
         <div class="dateSection flex w-96 justify-evenly">
@@ -80,10 +83,27 @@ async function refresDataBase(){
             <LineChart db = {db} today = {date}/>
         {/key}
     </div>
+<div class="flex">
 
     <DispData card = {true} awaitVal = {top5Apps} let:response title = "Most Used Apps">
         {#each response as key}
         {key.name} : <progress class = "progress progress-primary" value = {Math.round(key.time/6)/10} max = {totalTime/60}></progress>
         {/each}
     </DispData>
+
+    {#each $displayCatogaries as name }
+        <DispData card ={true} awaitVal = {getTop5Apps(db.getNameByCat(name,date))} let:response>
+            <div class="flex">
+                <p class = "card-title">{name}</p>
+                <button class= "btn" on:click={function() {$displayCatogaries.splice($displayCatogaries.indexOf(name),1);$displayCatogaries = [...$displayCatogaries];console.log($displayCatogaries)}}>
+                    <svg height="16" width="16" version="1.1" id="Capa_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 26 26" xml:space="preserve"><g><path style="fill:red;" d="M21.125,0H4.875C2.182,0,0,2.182,0,4.875v16.25C0,23.818,2.182,26,4.875,26h16.25 C23.818,26,26,23.818,26,21.125V4.875C26,2.182,23.818,0,21.125,0z M18.78,17.394l-1.388,1.387c-0.254,0.255-0.67,0.255-0.924,0 L13,15.313L9.533,18.78c-0.255,0.255-0.67,0.255-0.925-0.002L7.22,17.394c-0.253-0.256-0.253-0.669,0-0.926l3.468-3.467 L7.221,9.534c-0.254-0.256-0.254-0.672,0-0.925l1.388-1.388c0.255-0.257,0.671-0.257,0.925,0L13,10.689l3.468-3.468 c0.255-0.257,0.671-0.257,0.924,0l1.388,1.386c0.254,0.255,0.254,0.671,0.001,0.927l-3.468,3.467l3.468,3.467 C19.033,16.725,19.033,17.138,18.78,17.394z"/></g></svg>
+                </button>
+            </div>
+                {#each response as key }
+                    {key.name} : <progress class = "progress progress-primary" value = {Math.round(key.time/6)/10} max = {totalTime/60}></progress>
+                {/each}
+            </DispData>
+    {/each}
+
+</div>
 </div>
