@@ -13,11 +13,10 @@ class monitor():
         self.event = threading.Event()
         self.a = threading.Thread(target = self.mointoring)
         self.a.daemon = True
+    
+    def startThread(self):
+        db.refreshDate()
         self.a.start()
-
-        while True:
-            db.refreshDate()
-            time.sleep(1800)
 
     def mointoring(self):
         while not self.event.is_set():
@@ -32,12 +31,14 @@ class monitor():
 
                 if (application != self.app or context != self.context):
                     self.changed()
-                
-                if self.time - self.lap >300:
-                    self.changed()  
 
                 self.app = application
                 self.context = context
+                
+                if self.time - self.lap >300:
+                    self.changed()  
+                    db.refreshDate()
+
                 self.time = int(time.time())
                 time.sleep(1)
 
@@ -53,4 +54,4 @@ class monitor():
                 else:
                     db.addEntry(self.app,self.context,difference)
 
-d = monitor()
+# d = monitor()

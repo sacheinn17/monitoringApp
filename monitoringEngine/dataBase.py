@@ -3,17 +3,30 @@ from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 import datetime
 import json
+import csv
 
 engine = create_engine('sqlite:///monitoring.db',connect_args={"check_same_thread": False})
 Session = sessionmaker(bind = engine)
 session = Session()
 
+
 rulesQuery = session.query(rules)
 appUsageQuery = session.query(AppUsage)
+
+
+        
 class Database():
     def __init__(self):
         Base.metadata.create_all(engine)
         self.date = str(datetime.datetime.today().date())
+
+        with open('rules.csv','r') as f:
+            file = csv.reader(f)
+            for i in file:
+                x = rules(name = i[0],context = i[1],catogary = i[2],subCatogary = i[3],flip = int(i[4]))
+                session.add(x)
+
+        session.commit()
 
     def exists(self,appName,Context):
         t = appUsageQuery
@@ -26,6 +39,7 @@ class Database():
             return(u,True)
         else:
             return(-1,False)
+        
     def getCatAndSubCatAndSwap(self,name,context):
         flip = False
         temp = rulesQuery.filter_by(name = name)

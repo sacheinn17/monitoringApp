@@ -1,4 +1,4 @@
-let url = "http://127.0.0.1:8000/"
+let url = "http://127.0.0.1:1421/"
 
 async function getResponce(value){
   return (await fetch(url+value)).json()
