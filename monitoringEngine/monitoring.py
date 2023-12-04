@@ -46,7 +46,7 @@ class monitor():
         if self.app not in self.ignoreList:
             difference = self.time-self.lap
             self.lap = self.time
-            print(self.app,self.context, self.time)
+            # print(self.app,self.context, self.time)
             if difference >3:
                 x,exist = db.exists(self.app,self.context)
                 if exist:
@@ -54,4 +54,5 @@ class monitor():
                 else:
                     db.addEntry(self.app,self.context,difference)
 
-# d = monitor()
+d = monitor()
+d.startThread()

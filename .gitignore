@@ -32,3 +32,9 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+# Pyinstaller
+build
+dist
+*.exe
+*.png

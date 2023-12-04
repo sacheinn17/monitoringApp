@@ -8,10 +8,11 @@ import DonutChart from "./lib/donutChart.svelte"
 import { fade } from "svelte/transition";
 import LineChart from "./lib/lineChart.svelte";
 import { displayCatogaries } from "./lib/stores/lists.js";
+import { weeks } from "./lib/stores/lists.js";
 
 const db = new dataBase;
 let temp = [];
-let totalTime = 0;
+let totalTime ;
 let top5Apps = [];
 let t;
 let today = new Date();
@@ -29,12 +30,12 @@ async function setFetches(){
     temp = db.getCatogariesAndTime(date);
     totalTime = await db.getTotalTime(date);
     // @ts-ignore
-    top5Apps = getTop5Apps(db.getAppUsage(date));
+    top5Apps =await getTop5Apps(db.getAppUsage(date));
 }
 
 onMount(async() =>
 {
- setFetches()   
+ setFetches()       
 })
 
 async function refresDataBase(){
@@ -44,7 +45,7 @@ async function refresDataBase(){
 
 <div class="flex justify-center">
     <img src="/src/assets/clock-tilted.svg" alt="" srcset="">
-    <h1 class = "text-yellow-600 font-bold text-xl text-center">Hour Hand</h1>
+    <h1 class = "text-primary font-bold text-xl text-center">Hour Hand</h1>
 </div>
     <p class="text-secondary text-center  text-ellipsis p-1">Track your activity around the clock</p>
 
@@ -52,7 +53,7 @@ async function refresDataBase(){
     <div class="row1 flex justify-between">
 
         <DispData awaitVal = {totalTime} let:response>
-            Total Screen Time : {Math.round(response/6)/10} Minutes
+            <p class = "text-info">Total Screen Time : {Math.round(response/6)/10} Minutes</p>
         </DispData>
         
         <div class="dateSection flex w-96 justify-evenly">
@@ -61,7 +62,7 @@ async function refresDataBase(){
                     <path fill-rule="evenodd" d="M12 8a.5.5 0 0 1-.5.5H5.707l2.147 2.146a.5.5 0 0 1-.708.708l-3-3a.5.5 0 0 1 0-.708l3-3a.5.5 0 1 1 .708.708L5.707 7.5H11.5a.5.5 0 0 1 .5.5z"/>
                   </svg>
               </button>
-            <p class = "text-2xl">{date}</p>
+            <p class = "text-2xl text-accent hover:text-accent-focus">{date}</p>
             <button class="btn btn-circle btn-outline btn-sm " on:click={() =>{today.setDate(today.getDate()+1);date = getDate(today);console.log(today)}}>
                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-right-short" viewBox="0 0 16 16">
                     <path fill-rule="evenodd" d="M4 8a.5.5 0 0 1 .5-.5h5.793L8.146 5.354a.5.5 0 1 1 .708-.708l3 3a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708-.708L10.293 8.5H4.5A.5.5 0 0 1 4 8z"/>
@@ -82,7 +83,7 @@ async function refresDataBase(){
         {#key date}
             <LineChart db = {db} today = {date}/>
         {/key}
-    </div>
+    </div> 
 <div class="flex">
 
     <DispData card = {true} awaitVal = {top5Apps} let:response title = "Most Used Apps">

@@ -4,27 +4,49 @@ from sqlalchemy.orm import sessionmaker
 import datetime
 import json
 import csv
+import os
 
-engine = create_engine('sqlite:///monitoring.db',connect_args={"check_same_thread": False})
+defaultValues = '''Adobe Digital Editions,General,Productive,Reading,1
+Brave,General,UnProductive,Browsing,0
+Brave,YouTube,SemiProductive,Browsing,0
+Godot Engine,General,Productive,Game Development,0
+Visual Studio Code,General,Productive,Programming,0
+WhatsApp,General,UnProductive,Social Media,0
+SQLiteStudio (3.4.4),General,Productive,Programming,1
+Word (Product Activation Faile,General,Productive,Documetation,0
+WhatsApp,General,UnProductive,Social Media,0
+Opera,General,UnProductive,EntertainMent,0
+NX,General,Productive,Modelling,1
+hour-hand,General,Productive,Time Tracking,0'''
+
+Home = os.path.expanduser('~')
+dbPath = os.path.join(Home,".hourhand")
+
+if not os.path.exists(dbPath):
+    os.mkdir(dbPath)
+
+engine = create_engine('sqlite:///'+dbPath+'/hourHand.db',connect_args={"check_same_thread": False})
 Session = sessionmaker(bind = engine)
 session = Session()
 
+if not os.path.isfile(dbPath+"/rules.csv"):
+    with open( dbPath + '/rules.csv',"w") as file:
+        file.write(defaultValues)
 
 rulesQuery = session.query(rules)
 appUsageQuery = session.query(AppUsage)
 
-
-        
 class Database():
     def __init__(self):
         Base.metadata.create_all(engine)
         self.date = str(datetime.datetime.today().date())
 
-        with open('rules.csv','r') as f:
+        with open(dbPath+'rules.csv','r') as f:
             file = csv.reader(f)
             for i in file:
-                x = rules(name = i[0],context = i[1],catogary = i[2],subCatogary = i[3],flip = int(i[4]))
-                session.add(x)
+                if rulesQuery.filter_by(name = i[0]).filter_by(context=i[1]).first() == None:
+                    x = rules(name = i[0],context = i[1],catogary = i[2],subCatogary = i[3],flip = int(i[4]))
+                    session.add(x)
 
         session.commit()
 

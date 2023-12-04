@@ -1,12 +1,23 @@
+import { fetch,ResponseType } from "@tauri-apps/api/http";
+
 let url = "http://127.0.0.1:1421/"
 
+
+
 async function getResponce(value){
-  return (await fetch(url+value)).json()
+  return (await fetch(url+value,{
+    method:"GET",
+    timeout:30,
+    responseType:ResponseType.JSON,
+  })).data
 }
 
 async function getResponceAsJson(value = ''){
-  return JSON.parse(await (await fetch(url+value)).json())
-}
+  return JSON.parse((await fetch(url+value,{
+    method:"GET",
+    timeout:30,
+    responseType:ResponseType.JSON,
+  })).data)}
 
 // export async let totalTime = await (await fetch(url+"time/total")).json();
 export class dataBase

@@ -1,5 +1,5 @@
 import {dataBase} from "./api.js"
-
+import { weeks } from "./stores/lists.js";
 const db = new dataBase;
 
 export function sortByKeyDesc(array, key) {
@@ -30,7 +30,8 @@ export function getDates(date)
         curr = new Date(date);
         days.push(getDate(new Date(curr.setDate(firstDayofWeek+x))))
         }
-        
+    
+    weeks.set(days);
     return days;
 }
 
