@@ -14,5 +14,5 @@ This is an automatic time tracker which monitors your activites. This allows us 
 
 # Installation
 
-    Go to the link and download the installer. (Restart the system after installing for the application to work)
+Go to the link and download the installer. (Restart the system after installing for the application to work)
 
