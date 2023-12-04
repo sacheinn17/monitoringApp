@@ -24,7 +24,7 @@ ChangesAssociations=yes
 DisableProgramGroupPage=yes
 ; Uncomment the following line to run in non administrative install mode (install for current user only.)
 ;PrivilegesRequired=lowest
-OutputDir=D:\
+OutputDir=D:\projects\2-bitComputer\monitoringApp
 OutputBaseFilename=mysetup
 Compression=lzma
 SolidCompression=yes
