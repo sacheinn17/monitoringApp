@@ -8,7 +8,7 @@ import DonutChart from "./lib/donutChart.svelte"
 import { fade } from "svelte/transition";
 import LineChart from "./lib/lineChart.svelte";
 import { displayCatogaries } from "./lib/stores/lists.js";
-import { weeks } from "./lib/stores/lists.js";
+import { getDates } from "./lib/utilities.js";
 
 const db = new dataBase;
 let temp = [];
@@ -19,9 +19,13 @@ let today = new Date();
 let date = '';
 $:date = getDate(today); 
 
+let firstDate = '';
+
+
 $:{
     console.log(date,today);
     setFetches();
+    firstDate = getDates(today)[0];
 }
 
 async function setFetches(){
@@ -74,15 +78,16 @@ async function refresDataBase(){
 
     </div>
     <div class="row2 flex flex-row" transition:fade>
-        <DispData card = {true} awaitVal = {temp} let:response title = "Usage time by Catogary">
+        <DispData card = {true} awaitVal = {temp} let:response title = "Usage time by Catogary" customClass = "w-2/6">
             <div class="flex">
-                <DonutChart data={response} />
+                <DonutChart data={response}/>
             </div>
             
         </DispData>
-        {#key date}
-            <LineChart db = {db} today = {date}/>
+        {#key firstDate}
+        <LineChart db = {db} today = {date}/>
         {/key}
+        
     </div> 
 <div class="flex">
 

@@ -28,7 +28,8 @@ export function getDates(date)
     console.log(curr.getMonth())
     for (const x of Array(7).keys()){
         curr = new Date(date);
-        days.push(getDate(new Date(curr.setDate(firstDayofWeek+x))))
+            days.push(getDate(new Date(curr.setDate(firstDayofWeek+x)))) 
+            days = [...days]
         }
     
     weeks.set(days);
