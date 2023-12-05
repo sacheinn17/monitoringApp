@@ -53,6 +53,3 @@ class monitor():
                     db.updateTime(x,difference)
                 else:
                     db.addEntry(self.app,self.context,difference)
-
-d = monitor()
-d.startThread()

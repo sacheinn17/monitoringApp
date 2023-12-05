@@ -1,8 +1,6 @@
 from dataBase import dbPath 
 from monitoring import monitor
-import threading
 import uvicorn
-import api
 from multiprocessing import freeze_support
 import sys
 
@@ -14,4 +12,4 @@ if __name__  == "__main__":
     freeze_support()
 
     d.startThread()
-    uvicorn.run("api:app", port=1421, reload=False, workers = 4)
+    uvicorn.run("api:app", port=1421, reload=False, workers = 2)
