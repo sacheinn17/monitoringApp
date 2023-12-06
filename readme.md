@@ -14,7 +14,7 @@ This is an automatic time tracker which monitors your activites. This allows us 
 
 # Installation
 
-[Hour Hand Install](https://github.com/sacheinn17/monitoringApp/releases/tag/productivity)
+[Hour Hand Install](https://github.com/sacheinn17/monitoringApp/releases/)
 
 Go to the link and download the installer. (Restart the system after installing for the application to work)
 
